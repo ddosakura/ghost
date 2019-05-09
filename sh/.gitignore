@@ -1,0 +1,4 @@
+grammar/*
+!grammar/*.s.go
+!grammar/Makefile
+!grammar/*.tm
