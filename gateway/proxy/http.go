@@ -79,6 +79,7 @@ func InitHTTP(c *HTTPConfig) *Controller {
 	}
 	controller.shutdown = func() {
 		// TODO: check Hijacker
+		// https://segmentfault.com/a/1190000008383272
 		s.Shutdown(nil)
 
 	}
