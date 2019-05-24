@@ -5,14 +5,13 @@ import (
 
 	"github.com/ddosakura/ghost"
 	"github.com/ddosakura/ghost/cmd"
-	"github.com/kr/pretty"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 // master data model
 const (
-	currentVersion = "0.0.0-1"
+	CurrentVersion = "0.0.0-1"
 
 	cDBver  = "master.version"
 	cDBauth = "master.auth"
@@ -26,17 +25,17 @@ type model struct {
 
 // use this to check model version, so it can't be changed!
 type cDBverT struct {
-	currentVersion string
+	CurrentVersion string
 }
 
 type cDBauthT struct {
-	rootUser string
-	rootPass string
+	RootUser string
+	RootPass string
 }
 
 type cDBuserT struct {
-	user string
-	pass string
+	NodeUser string
+	NodePass string
 }
 
 func newModel(session *mgo.Session) *model {
@@ -82,8 +81,8 @@ func (m *model) _checkModelVersion() (e error) {
 	if err := db.C(cDBver).Find(bson.M{}).One(&ver); err != nil {
 		ghost.Error(err)
 	}
-	ghost.Info("Model Version:", ver.currentVersion)
-	v := cmd.NewVer(ver.currentVersion)
+	ghost.Info("Model Version:", ver.CurrentVersion)
+	v := cmd.NewVer(ver.CurrentVersion)
 
 	// <= v0.0.0-0
 	if v.Compare("0") < 1 {
@@ -105,8 +104,8 @@ func (m *model) _checkModelVersion() (e error) {
 	}
 
 	// == currentVersion
-	if v.Compare(currentVersion) == 1 {
-		ghost.Error(fmt.Sprintf("current model version is v%s, but db model version is v%s", currentVersion, v))
+	if v.Compare(CurrentVersion) == 1 {
+		ghost.Error(fmt.Sprintf("current model version is v%s, but db model version is v%s", CurrentVersion, v))
 	}
 
 	return
@@ -114,13 +113,15 @@ func (m *model) _checkModelVersion() (e error) {
 
 func (m *model) _init() error {
 	db := m.session.DB(m.dbName)
-	if err := db.C(cDBver).Insert(&cDBverT{currentVersion}); err != nil {
+
+	ver := cDBverT{CurrentVersion}
+	//pretty.Println("W", ver)
+	if err := db.C(cDBver).Insert(&ver); err != nil {
 		return err
 	}
 
-	var is []interface{}
-	db.C(cDBver).Find(bson.M{}).All(&is)
-	pretty.Println(is)
+	db.C(cDBver).Find(bson.M{}).One(&ver)
+	//pretty.Println("R", ver)
 
 	// TODO: ...
 	return nil
