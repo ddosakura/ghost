@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/ddosakura/ghost/cmd"
-	"github.com/ddosakura/ghost/cmd/sub"
 	"github.com/spf13/cobra"
 )
 
@@ -20,5 +19,5 @@ func main() {
 }
 
 func init() {
-	rootCmd.AddCommand(sub.MasterServiceCmd)
+	rootCmd.AddCommand(serviceCmd)
 }

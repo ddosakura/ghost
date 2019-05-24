@@ -1,0 +1,22 @@
+version: '2'
+
+services:
+  mongo:
+    image: mongo:4.0
+    ports:
+      - 27017:27017
+    volumes:
+      - /home/moyinzi/docker_data/ghostdev/mongodb:/docker-entrypoint-initdb.d/
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+    networks:
+      default:
+        ipv4_address: 172.31.1.2
+
+networks:
+  default:
+    ipam:
+      config:
+      - subnet: 172.31.1.0/24
+        gateway: 172.31.1.1

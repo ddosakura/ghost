@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/ddosakura/ghost"
+	"golang.org/x/net/proxy"
 )
 
 // HTTPConfig for Gateway
@@ -38,12 +39,17 @@ type BasicAuth struct {
 // InitHTTP Gateway
 func InitHTTP(c *HTTPConfig) *Controller {
 	if c.DialContext == nil {
-		c.DialContext = (&net.Dialer{
-			Timeout:   30 * time.Second,
-			KeepAlive: 30 * time.Second,
-			DualStack: true,
-		}).DialContext
+		//c.DialContext = (&net.Dialer{
+		//	Timeout:   30 * time.Second,
+		//	KeepAlive: 30 * time.Second,
+		//	DualStack: true,
+		//}).DialContext
+		c.DialContext = proxy.Direct.DialContext
 	}
+
+	//http.ProxyURL
+	//proxy.SOCKS5()
+
 	transport := &http.Transport{
 		Proxy:                 c.Proxy,
 		DialContext:           c.DialContext,

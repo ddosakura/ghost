@@ -57,13 +57,13 @@ func logger(lv logLv, v ...interface{}) (s string) {
 	switch lv {
 	case logI:
 		// tag = fmt.Sprintf(colf, 0x1B, 1, 34, "[debug]", 0x1B)
-		tag = fmt.Sprintf(colf, 0x1B, 0, 32, " [info]", 0x1B)
+		tag = fmt.Sprintf(colf, 0x1B, 0, 32, " [info] ", 0x1B)
 	case logW:
-		tag = fmt.Sprintf(colf, 0x1B, 1, 33, " [warn]", 0x1B)
+		tag = fmt.Sprintf(colf, 0x1B, 1, 33, " [warn] ", 0x1B)
 	case logE:
-		tag = fmt.Sprintf(colf, 0x1B, 1, 31, "[error]", 0x1B)
+		tag = fmt.Sprintf(colf, 0x1B, 1, 31, "[error] ", 0x1B)
 	case logC:
-		tag = fmt.Sprintf(colf, 0x1B, 1, 31, "[crash]", 0x1B)
+		tag = fmt.Sprintf(colf, 0x1B, 1, 31, "[crash] ", 0x1B)
 	default:
 	}
 	log.Print(tag, s)

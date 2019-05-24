@@ -8,7 +8,7 @@ import (
 
 func TestHTTP(t *testing.T) {
 	c := InitHTTP(&HTTPConfig{
-		Addr: ":80",
+		Addr: ":8888",
 	})
 	c.Sub("a", func(bool) {})
 	c.Sub("a", nil)
