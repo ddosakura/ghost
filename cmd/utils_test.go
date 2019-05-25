@@ -45,3 +45,10 @@ func TestUtilVer(t *testing.T) {
 	tUserVerCompare(t, "1.3", "1.3.0-1", -1)
 	tUserVerCompare(t, "0.5", "1.3", -1)
 }
+
+//func TestUtilUpURL(t *testing.T) {
+//	pretty.Println(NewUpURL("sakura:123456@localhost:7000"))
+//	pretty.Println(NewUpURL("ghost:123456@g").Pass == "123456")
+//	pretty.Println(NewUpURL("localhost").Host == "localhost")
+//	pretty.Println(NewUpURL("127.0.0.1"))
+//}

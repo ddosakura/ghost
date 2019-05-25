@@ -6,6 +6,7 @@ import (
 )
 
 var (
+	// Major[.Minor[.R[-B]]]
 	regVer = regexp.MustCompile("([0-9]+)(.([0-9]+)(.([0-9]+)(-([0-9]+))?)?)?")
 )
 
@@ -121,3 +122,29 @@ func (v *Ver) CompareV(ver *Ver) int {
 
 	return 0
 }
+
+//var (
+//	// [user:pass@]host[:port]
+//regUpURL=regexp.MustCompile("^(([^:@]+)(:([^:@]+))?@)?([^:@]+)(:([0-9]+))?$")
+//)
+//// UpURL Utils
+//type UpURL struct {
+//	User string
+//	Pass string
+//	Host string
+//	Port string
+//}
+//
+//// NewUpURL from s
+//func NewUpURL(s string) *UpURL {
+//	v := regUpURL.FindStringSubmatch(s)
+//	if v == nil {
+//		return nil
+//	}
+//	return &UpURL{
+//		User: v[2],
+//		Pass: v[4],
+//		Host: v[5],
+//		Port: v[7],
+//	}
+//}

@@ -1,0 +1,67 @@
+syntax = "proto3";
+package model;
+
+// --- Model for DB ---
+
+// use this to check model version, so it can't be changed!
+message Version { string CurrentVersion = 1; }
+
+// 用户信息
+message User {
+  string User = 1;
+  bytes Pass = 2;
+  repeated string Domain = 3;
+}
+
+// 域
+message Domain {
+  string Name = 1;
+  string Jump = 2; // 跳转到其他域
+  string IP = 3;
+}
+
+enum UserMode {
+  OPEN = 0;         // 开放模式，无需注册
+  KEY = 1;          // 口令认证模式
+  REGIST_OPEN = 2;  // 注册模式，任意注册
+  REGIST_CODE = 3;  // 注册模式，邀请码注册
+  REGIST_ADMIN = 4; // 注册模式，管理员注册模式
+}
+
+// 服务器配置
+message ServerConfig {
+  UserMode UserMode = 1;      // 节点认证模式
+  int64 MaxUser = 2;          // 最大用户数
+  int64 MaxDomain = 3;        // 最大子域数
+  int64 MaxDomainPerUser = 4; // 每个用户的最大域数
+}
+
+// 邀请码(JWT载荷)
+message InviteCode {
+  int64 MaxDomain = 1;      // 用户允许的最大域数
+  string DefaultDomain = 2; // 默认域(使用用户名时访问的域)
+}
+
+// --- Sign of Service ---
+
+enum Type {
+  // ghost-master service
+  START = 0;
+  STOP = 1;
+  STATUS = 2;
+}
+
+message Request {
+  Type Type = 1;
+  User auth = 2;
+}
+
+enum Status {
+  Success = 0;
+  AuthFail = 1;
+}
+
+message Response {
+  Status Code = 1;
+  string Msg = 2;
+}

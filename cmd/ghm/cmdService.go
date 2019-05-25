@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 
+	"net/url"
+
 	"github.com/ddosakura/ghost/cmd"
 	"github.com/ddosakura/ghost/cmd/proto/sign"
 	proto "github.com/golang/protobuf/proto"
@@ -18,6 +20,18 @@ var (
 		Short: "manage status of service",
 		Long:  `Service start/stop/status (recommend starting as system service).`,
 		RunE: func(c *cobra.Command, args []string) error {
+			if u, e := url.Parse("http://" + upService); e == nil {
+				// pretty.Println(u)
+				if u.User == nil {
+					upServiceData.user = url.UserPassword("ghost", "123456")
+				} else {
+					upServiceData.user = u.User
+				}
+				upServiceData.host = u.Host
+			} else {
+				return e
+			}
+			// pretty.Println(upServiceData)
 			switch serviceSign {
 			case "start":
 				session, e := mgo.Dial(mongoURL)
@@ -29,7 +43,7 @@ var (
 				}
 				defer session.Close()
 
-				m := newModel(session)
+				m := newRepo(session)
 				if e = m.init(dbName); e != nil {
 					return e
 				}
@@ -60,11 +74,17 @@ var (
 		},
 	}
 
-	serviceSign string
-	serviceAddr string
-	useKCP      bool // TODO: kcp
-	mongoURL    string
-	dbName      string
+	serviceSign   string // 服务操作
+	serviceAddr   string // 服务监听
+	upService     string // 上游地址 (include Auth)
+	upServiceData struct {
+		user *url.Userinfo
+		host string
+	}
+	useKCP bool // TODO: kcp
+
+	mongoURL string // db URL (include Auth)
+	dbName   string // db Name
 )
 
 func init() {
@@ -78,7 +98,13 @@ func init() {
 		&serviceAddr,
 		"addr", "a",
 		cmd.AddrOfMaster,
-		"address of service",
+		"address of this service",
+	)
+	serviceCmd.PersistentFlags().StringVarP(
+		&upService,
+		"up", "u",
+		"ghost:123456@g",
+		"address of up service - [user:pass@]host[:port] or init top domain - [user:pass@]domain",
 	)
 	serviceCmd.PersistentFlags().BoolVarP(
 		&useKCP,
@@ -86,6 +112,7 @@ func init() {
 		false,
 		"replacing TCP with KCP",
 	)
+
 	serviceCmd.PersistentFlags().StringVarP(
 		&mongoURL,
 		"mongo", "m",
