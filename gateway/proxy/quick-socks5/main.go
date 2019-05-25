@@ -7,9 +7,9 @@ import (
 
 var (
 	rootCmd = &cobra.Command{
-		Use:   "ghost-master",
-		Short: "Master-Node for Ghost-Net",
-		Long:  `Ghost-Net is a toolbox of network.`,
+		Use:   "qsocks",
+		Short: "test socks5",
+		Long:  `Socks5 Server Test.`,
 		Run: func(c *cobra.Command, args []string) {
 			conf := &socks5.Config{}
 			server, err := socks5.New(conf)
