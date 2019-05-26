@@ -1,7 +1,6 @@
 package cs
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/xtaci/smux"
@@ -77,14 +76,12 @@ type smuxP struct {
 	stream *smux.Stream
 }
 
-func (p *smuxP) Read(b []byte) {
-	n, e := p.stream.Read(b)
-	fmt.Println(n, e)
+func (p *smuxP) Read(b []byte) (int, error) {
+	return p.stream.Read(b)
 }
 
-func (p *smuxP) Write(b []byte) {
-	n, e := p.stream.Write(b)
-	fmt.Println(n, e)
+func (p *smuxP) Write(b []byte) (int, error) {
+	return p.stream.Write(b)
 }
 
 func (p *smuxP) Close() {

@@ -1,7 +1,6 @@
 package cs
 
 import (
-	"fmt"
 	"net"
 )
 
@@ -64,14 +63,12 @@ type tcpP struct {
 	conn net.Conn
 }
 
-func (p *tcpP) Read(buf []byte) {
-	n, e := p.conn.Read(buf)
-	fmt.Println(n, e)
+func (p *tcpP) Read(buf []byte) (int, error) {
+	return p.conn.Read(buf)
 }
 
-func (p *tcpP) Write(buf []byte) {
-	n, e := p.conn.Write(buf)
-	fmt.Println(n, e)
+func (p *tcpP) Write(buf []byte) (int, error) {
+	return p.conn.Write(buf)
 }
 
 func (p *tcpP) Close() {

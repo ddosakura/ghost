@@ -68,11 +68,12 @@ func testCS(t *testing.T, s S, c C) {
 	go func() {
 		p := MustP(s.Accept())
 
-		var buf []byte
-		fmt.Println("Server Receive:", string(buf))
-		p.Read(buf)
-		fmt.Println("Server Send:", string(buf))
-		p.Write(buf)
+		bufA := make([]byte, 64)
+		bufB := []byte("yes!")
+		p.Read(bufA)
+		fmt.Println("Server Receive:", string(bufA))
+		fmt.Println("Server Send:", string(bufB))
+		p.Write(bufB)
 
 		p.Close()
 		s.Close()
@@ -82,11 +83,12 @@ func testCS(t *testing.T, s S, c C) {
 
 	p := MustP(c.Open())
 
-	buf := []byte("Hello World!")
-	fmt.Println("Client Send:", string(buf))
-	p.Write(buf)
-	fmt.Println("Client Receive:", string(buf))
-	p.Read(buf)
+	bufA := make([]byte, 64)
+	bufB := []byte("Hello World!")
+	fmt.Println("Client Send:", string(bufB))
+	p.Write(bufB)
+	p.Read(bufA)
+	fmt.Println("Client Receive:", string(bufA))
 
 	p.Close()
 	c.Close()

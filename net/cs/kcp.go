@@ -1,7 +1,6 @@
 package cs
 
 import (
-	"fmt"
 	"net"
 
 	kcp "github.com/xtaci/kcp-go"
@@ -67,13 +66,11 @@ type kcpP struct {
 	session *kcp.UDPSession
 }
 
-func (p *kcpP) Read(b []byte) {
-	n, e := p.session.Read(b)
-	fmt.Println(n, e)
+func (p *kcpP) Read(b []byte) (int, error) {
+	return p.session.Read(b)
 }
-func (p *kcpP) Write(b []byte) {
-	n, e := p.session.Write(b)
-	fmt.Println(n, e)
+func (p *kcpP) Write(b []byte) (int, error) {
+	return p.session.Write(b)
 }
 func (p *kcpP) Close() {
 	p.session.Close()
