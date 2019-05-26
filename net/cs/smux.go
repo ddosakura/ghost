@@ -53,7 +53,7 @@ func (s *smuxS) Accept() (P, error) {
 
 func (s *smuxS) Close() {
 	s.session.Close()
-	s.conn.Close()
+	// s.conn.Close()
 }
 
 type smuxC struct {
@@ -70,7 +70,7 @@ func (c *smuxC) Open() (P, error) {
 }
 func (c *smuxC) Close() {
 	c.session.Close()
-	c.conn.Close()
+	// c.conn.Close()
 }
 
 type smuxP struct {

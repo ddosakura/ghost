@@ -6,7 +6,7 @@ import (
 )
 
 type tcp struct {
-	tcpC
+	*tcpC
 }
 
 func (b *tcp) S() (S, error) {
@@ -27,7 +27,7 @@ func TCP(address string) (CS, error) {
 	if e != nil {
 		return nil, e
 	}
-	return &tcp{tcpC{addr}}, nil
+	return &tcp{&tcpC{addr}}, nil
 }
 
 type tcpS struct {
