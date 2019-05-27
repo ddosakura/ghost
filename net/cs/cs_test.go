@@ -26,7 +26,7 @@ func TestTCP(t *testing.T) {
 
 func TestKCP(t *testing.T) {
 	key := pbkdf2.Key([]byte("demo pass"), []byte("demo salt"), 1024, 32, sha1.New)
-	cs := MustCS(KCP("127.0.0.1:8300", key))
+	cs := MustCS(KCP("127.0.0.1:8200", key))
 	s := MustS(cs.S())
 	c := MustC(cs.C())
 
@@ -34,29 +34,58 @@ func TestKCP(t *testing.T) {
 }
 
 func TestTCPwithSMUX(t *testing.T) {
-	cs := MustCS(TCP("127.0.0.1:8200"))
+	cs := MustCS(TCP("127.0.0.1:8300"))
 
-	ps := MustP(MustS(cs.S()).Accept())
-	s := MustS(SMUX(ps).S())
-	pc := MustP(MustC(cs.C()).Open())
-	c := MustC(SMUX(pc).C())
+	testMUX(cs, func(ps, pc P) {
+		s := MustS(SMUX(ps).S())
+		c := MustC(SMUX(pc).C())
 
-	testCS(t, s, c)
-
-	ps.Close()
-	pc.Close()
+		testCS(t, s, c)
+	})
 }
 
 func TestKCPwithSMUX(t *testing.T) {
 	key := pbkdf2.Key([]byte("demo pass"), []byte("demo salt"), 1024, 32, sha1.New)
-	cs := MustCS(KCP("127.0.0.1:8200", key))
+	cs := MustCS(KCP("127.0.0.1:8400", key))
 
-	ps := MustP(MustS(cs.S()).Accept())
-	s := MustS(SMUX(ps).S())
-	pc := MustP(MustC(cs.C()).Open())
-	c := MustC(SMUX(pc).C())
+	testMUX(cs, func(ps, pc P) {
+		s := MustS(SMUX(ps).S())
+		c := MustC(SMUX(pc).C())
 
-	testCS(t, s, c)
+		testCS(t, s, c)
+	})
+}
+
+func testMUX(cs CS, fn func(s P, c P)) {
+	s := MustS(cs.S())
+	var ps, pc P
+	go func() {
+		ps = MustP(s.Accept())
+		fmt.Println("服务器通信检测中...")
+		buf := make([]byte, 64)
+		ps.Write([]byte("S"))
+		ps.Read(buf)
+		fmt.Println("服务器 LOG", string(buf))
+	}()
+	time.Sleep(time.Second)
+	go func() {
+		pc = MustP(MustC(cs.C()).Open())
+		fmt.Println("客户端通信检测中...")
+		buf := make([]byte, 64)
+		pc.Write([]byte("C"))
+		pc.Read(buf)
+		fmt.Println("客户端 LOG", string(buf))
+	}()
+
+	// 确保通信连接的建立
+	// retry := 0
+	for ps == nil || pc == nil {
+		fmt.Println("state: ps=", ps, "; pc=", pc)
+		time.Sleep(time.Second)
+	}
+
+	fmt.Println("连接复用开始")
+	fn(ps, pc)
 
 	ps.Close()
 	pc.Close()
@@ -64,6 +93,8 @@ func TestKCPwithSMUX(t *testing.T) {
 
 func testCS(t *testing.T, s S, c C) {
 	// defer hanlderr(t)
+
+	time.Sleep(time.Second)
 
 	go func() {
 		p := MustP(s.Accept())
@@ -78,8 +109,6 @@ func testCS(t *testing.T, s S, c C) {
 		p.Close()
 		s.Close()
 	}()
-
-	time.Sleep(time.Second)
 
 	p := MustP(c.Open())
 

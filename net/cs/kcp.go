@@ -1,6 +1,7 @@
 package cs
 
 import (
+	"fmt"
 	"net"
 
 	kcp "github.com/xtaci/kcp-go"
@@ -15,6 +16,7 @@ func (b *tKCP) S() (S, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("KCP 监听开始")
 	return &kcpS{l}, nil
 }
 
@@ -37,10 +39,12 @@ type kcpS struct {
 }
 
 func (s *kcpS) Accept() (P, error) {
+	fmt.Println("KCP 请求获取中...")
 	session, err := s.l.AcceptKCP()
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("KCP 请求确认")
 	return &kcpP{session}, nil
 }
 func (s *kcpS) Close() {

@@ -1,6 +1,7 @@
 package cs
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/xtaci/smux"
@@ -15,6 +16,7 @@ func (b *sMux) S() (S, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("服务器状态检查完毕！")
 	return &smuxS{
 		b,
 		session,
@@ -26,6 +28,7 @@ func (b *sMux) C() (C, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("客户端状态检查完毕！")
 	return &smuxC{
 		b,
 		session,

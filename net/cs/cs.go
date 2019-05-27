@@ -24,7 +24,6 @@ type C interface {
 
 // P wrapper pipe
 type P interface {
-	// TODO: R/W
 	Read([]byte) (int, error)  // Read from Conn
 	Write([]byte) (int, error) // Write to Conn
 	Close()                    // Close Conn
