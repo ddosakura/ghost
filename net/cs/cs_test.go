@@ -78,7 +78,6 @@ func testMUX(cs CS, fn func(s P, c P)) {
 	}()
 
 	// 确保通信连接的建立
-	// retry := 0
 	for ps == nil || pc == nil {
 		fmt.Println("state: ps=", ps, "; pc=", pc)
 		time.Sleep(time.Second)
